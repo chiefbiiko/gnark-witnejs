@@ -56,17 +56,17 @@ export function calculate(inputs, publics, prime = BN_254) {
     for (const pub of pubs) {
         if (Array.isArray(pub)) { // TODO VERIFY ARRAY PREFIXING MANUALLY
             // TODO prefix arr len
-            Array.prototype.push.apply(out, toBytesBE(pub % prime, 4))
+            Array.prototype.push.apply(out, toBytesBE(pub % prime, 32))
         } else {
-            Array.prototype.push.apply(out, toBytesBE(pub % prime, 4))
+            Array.prototype.push.apply(out, toBytesBE(pub % prime, 32))
         }
     }
     for (const sec of secs) {
         if (Array.isArray(pub)) { // TODO VERIFY ARRAY PREFIXING MANUALLY
             // TODO prefix arr len
-            Array.prototype.push.apply(out, toBytesBE(sec % prime, 4))
+            Array.prototype.push.apply(out, toBytesBE(sec % prime, 32))
         } else {
-            Array.prototype.push.apply(out, toBytesBE(sec % prime, 4))
+            Array.prototype.push.apply(out, toBytesBE(sec % prime, 32))
         }
     }
     return Buffer.from(out)
