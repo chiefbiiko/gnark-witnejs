@@ -45,6 +45,9 @@ export default function serialize(inputs, publics, prime = BN_254) {
   const pubs = []
   const secs = []
   for (var [k, v] of Object.entries(inputs)) {
+    if (typeof v === "object") {
+        throw Error("nested objects not supported")
+    }
     if (publics[k] === true) {
       pubs.push(v)
     } else {
