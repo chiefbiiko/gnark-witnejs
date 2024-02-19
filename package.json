@@ -4,7 +4,8 @@
   "description": "gnark witness calculator in js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./test.js",
+    "fmt": "npx prettier --arrow-parens avoid --no-semi --write ./*.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/chiefbiiko/gnark-witnejs/issues"
   },
-  "homepage": "https://github.com/chiefbiiko/gnark-witnejs#readme"
+  "homepage": "https://github.com/chiefbiiko/gnark-witnejs#readme",
+  "devDependencies": {
+    "brittle": "3.4.0"
+  }
 }
