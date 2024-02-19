@@ -1,5 +1,3 @@
-// Package witness provides serialization helpers to encode a witness into a []byte.
-//
 // Binary protocol
 //
 //	Witness     ->  [uint32(nbPublic) | uint32(nbSecret) | fr.Vector(variables)]
@@ -21,10 +19,15 @@
 //   - Hex representation with values `Y = 35`, `X = 3`, `Z = 2`
 //     `000000010000000200000003000000000000000000000000000000000000000000000000000000000000002300000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002`
 
-const BN_254 =
+const BN254_PRIME =
   21888242871839275222246405745257275088696311157297823662689037894645226208583n
 
-/** Writes given bigint to $len big-endian bytes. */
+/**
+ * Writes given bigint to big-endian bytes with given length.
+ * @param {bigint|number|string} b Scalar
+ * @param {number} len Number of output bytes
+ * @returns {Buffer} Big-endian bytes
+ */
 function toBytesBE(b, len) {
   if (typeof b !== "bigint") {
     b = BigInt(b)
@@ -37,14 +40,29 @@ function toBytesBE(b, len) {
   return out
 }
 
-function total(x, hfdhfkjhkh) {
-  //TODO calc total number of items in (all, incl nested) array(s) (of) x
+/**
+ * Counts all items at any nesting level in all passed arrays.
+ * @param  {...any} x Arbitrarily nested bigint array(s) 
+ * @returns {number} Total item count
+ */
+function total(...x) {
+  return x.reduce((acc, cur) => acc.concat(cur), []).reduce((acc, cur) => {
+    if (Array.isArray(cur)) {
+        return total(cur) + acc
+    } else {
+        return acc + 1
+    }
+  }, 0)
 }
 
-// inputs must only contain bigints and arbitrarily nested bigint arrays, no nested objects.
-// publics is an object containing each public input's key and the respective value set to true.
-// prime indicates the constraint system curve used
-export default function serialize(inputs, publics, prime = BN_254) {
+/**
+ * Serializes given gnark inputs to a binary full witness.
+ * @param {Object} inputs Must only contain bigint (arrays), no nested objects.
+ * @param {Object} publics Must set each *public* input's key to true.
+ * @param {bigint} prime Prime of the constraint system's elliptic curve
+ * @returns {Buffer} Full witness serialized
+ */
+export default function serialize(inputs, publics, prime = BN254_PRIME) {
   const out = []
   const pubs = []
   const secs = []
@@ -58,9 +76,9 @@ export default function serialize(inputs, publics, prime = BN_254) {
       secs.push(v)
     }
   }
-  Array.prototype.push.apply(out, toBytesBE(pubs.length, 4))
-  Array.prototype.push.apply(out, toBytesBE(secs.length, 4))
-  Array.prototype.push.apply(out, toBytesBE(pubs.length + secs.length, 4))
+  Array.prototype.push.apply(out, toBytesBE(total(pubs), 4))
+  Array.prototype.push.apply(out, toBytesBE(total(secs), 4))
+  Array.prototype.push.apply(out, toBytesBE(total(pubs, secs), 4))
   for (const pub of pubs) {
     if (Array.isArray(pub)) {
       for (const p of pub) {
