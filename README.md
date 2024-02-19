@@ -15,7 +15,7 @@ const publics = { x: true } // indicates public inputs
 const buf = serialize(inputs, publics)
 ```
 
-Serializes the full witness, i.e. incl. public and secret inputs as long as
+Serializes the full witness, i.e. incl. public and secret inputs as long as:
 
 + the input object does not contain nested objects
   > nested arrays are supported though
