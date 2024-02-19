@@ -46,7 +46,7 @@ export default function serialize(inputs, publics, prime = BN_254) {
   const secs = []
   for (var [k, v] of Object.entries(inputs)) {
     if (typeof v === "object") {
-        throw Error("nested objects not supported")
+      throw Error("nested objects not supported")
     }
     if (publics[k] === true) {
       pubs.push(v)
@@ -59,18 +59,18 @@ export default function serialize(inputs, publics, prime = BN_254) {
   Array.prototype.push.apply(out, toBytesBE(pubs.length + secs.length, 4))
   for (const pub of pubs) {
     if (Array.isArray(pub)) {
-      // TODO VERIFY ARRAY PREFIXING MANUALLY
-      // TODO prefix arr len
-      // Array.prototype.push.apply(out, toBytesBE(pub % prime, 32))
+      for (const p of pub) {
+        Array.prototype.push.apply(out, toBytesBE(p % prime, 32))
+      }
     } else {
       Array.prototype.push.apply(out, toBytesBE(pub % prime, 32))
     }
   }
   for (const sec of secs) {
     if (Array.isArray(sec)) {
-      // TODO VERIFY ARRAY PREFIXING MANUALLY
-      // TODO prefix arr len
-      // Array.prototype.push.apply(out, toBytesBE(sec % prime, 32))
+      for (const s of sec) {
+        Array.prototype.push.apply(out, toBytesBE(s % prime, 32))
+      }
     } else {
       Array.prototype.push.apply(out, toBytesBE(sec % prime, 32))
     }
