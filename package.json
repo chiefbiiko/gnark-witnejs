@@ -1,5 +1,6 @@
 {
   "name": "gnark-witnejs",
+  "type": "module",
   "version": "0.0.1",
   "description": "gnark witness calculator in js",
   "main": "index.js",

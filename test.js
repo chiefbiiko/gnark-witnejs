@@ -1,5 +1,5 @@
 import test from "brittle"
-import serialize from "."
+import serialize from "./index.js"
 
 test("serializing a trivial input", function (t) {
   const inputs = { x: 3n, y: 35n, z: 2n }
