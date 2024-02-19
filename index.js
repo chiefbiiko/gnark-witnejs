@@ -42,17 +42,19 @@ function toBytesBE(b, len) {
 
 /**
  * Counts all items at any nesting level in all passed arrays.
- * @param  {...any} x Arbitrarily nested bigint array(s) 
+ * @param  {...any} x Arbitrarily nested bigint array(s)
  * @returns {number} Total item count
  */
 function total(...x) {
-  return x.reduce((acc, cur) => acc.concat(cur), []).reduce((acc, cur) => {
-    if (Array.isArray(cur)) {
+  return x
+    .reduce((acc, cur) => acc.concat(cur), [])
+    .reduce((acc, cur) => {
+      if (Array.isArray(cur)) {
         return total(cur) + acc
-    } else {
+      } else {
         return acc + 1
-    }
-  }, 0)
+      }
+    }, 0)
 }
 
 /**
