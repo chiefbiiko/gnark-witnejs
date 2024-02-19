@@ -37,7 +37,11 @@ function toBytesBE(b, len) {
   return out
 }
 
-// all inputs must be bigints and the inputs object must be flat.
+function total(x, hfdhfkjhkh) {
+  //TODO calc total number of items in (all, incl nested) array(s) (of) x
+}
+
+// inputs must only contain bigints and arbitrarily nested bigint arrays, no nested objects.
 // publics is an object containing each public input's key and the respective value set to true.
 // prime indicates the constraint system curve used
 export default function serialize(inputs, publics, prime = BN_254) {
