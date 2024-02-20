@@ -62,10 +62,17 @@ function total(...x) {
  * @param {Object} inputs Must only contain bigint (arrays), no nested objects.
  * @param {Object} publics Must set each *public* input's key to true.
  * @param {bigint} prime Prime of the constraint system's elliptic curve
- * @returns {Buffer} Full witness serialized
+ * @param {boolean} publicOnly Only serializes the public witness
+ * @returns {Buffer} Serialized witness
  */
-export default function serialize(inputs, publics, prime = BN254_PRIME) {
+export default function serialize(
+  inputs,
+  publics,
+  { prime = BN254_PRIME, publicOnly = false },
+) {
   const out = []
+
+  // sort public/secret inputs
   const pubs = []
   const secs = []
   for (var [k, v] of Object.entries(inputs)) {
@@ -74,13 +81,22 @@ export default function serialize(inputs, publics, prime = BN254_PRIME) {
     }
     if (publics[k] === true) {
       pubs.push(v)
-    } else {
+    } else if (!publicOnly) {
       secs.push(v)
     }
   }
+
+  // write npub nsec nall
   Array.prototype.push.apply(out, toBytesBE(total(pubs), 4))
-  Array.prototype.push.apply(out, toBytesBE(total(secs), 4))
-  Array.prototype.push.apply(out, toBytesBE(total(pubs, secs), 4))
+  if (!publicOnly) {
+    Array.prototype.push.apply(out, toBytesBE(total(secs), 4))
+  }
+  Array.prototype.push.apply(
+    out,
+    toBytesBE(total(pubs, publicOnly ? [] : secs), 4),
+  )
+
+  // push actual field elements for public inputs
   for (const pub of pubs) {
     if (Array.isArray(pub)) {
       for (const p of pub) {
@@ -90,6 +106,8 @@ export default function serialize(inputs, publics, prime = BN254_PRIME) {
       Array.prototype.push.apply(out, toBytesBE(pub % prime, 32))
     }
   }
+
+  // push actual field elements for secret inputs
   for (const sec of secs) {
     if (Array.isArray(sec)) {
       for (const s of sec) {
@@ -99,5 +117,6 @@ export default function serialize(inputs, publics, prime = BN254_PRIME) {
       Array.prototype.push.apply(out, toBytesBE(sec % prime, 32))
     }
   }
+
   return Buffer.from(out)
 }

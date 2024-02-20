@@ -28,3 +28,20 @@ test("serializing an input containing arrays", function (t) {
 
   t.is(buf.toString("hex"), expected)
 })
+
+test("serializing public inputs only", function (t) {
+  const inputs = {
+    a: 55n,
+    b: [
+      340282366920938463463374607431768211455n,
+      204169420152563078078024764459060926873n,
+    ],
+  }
+  const publics = { a: true }
+  const expected =
+    "0000000100000000000000010000000000000000000000000000000000000000000000000000000000000037"
+
+  const buf = serialize(inputs, publics)
+
+  t.is(buf.toString("hex"), expected)
+})

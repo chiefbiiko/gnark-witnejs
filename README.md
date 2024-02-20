@@ -11,8 +11,9 @@ import serialize from "gnark-witnejs"
 
 const inputs = { x: 3n, y: 35n, z: [ [ 0n, 99n ], 77n ] }
 const publics = { x: true } // indicates public inputs
+const opts = {/* prime: BN254, publicOnly: false */}
 
-const buf = serialize(inputs, publics)
+const buf = serialize(inputs, publics, opts)
 ```
 
 Serializes the full witness, i.e. incl. public and secret inputs as long as:
