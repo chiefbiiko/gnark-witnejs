@@ -41,7 +41,7 @@ test("serializing public inputs only", function (t) {
   const expected =
     "0000000100000000000000010000000000000000000000000000000000000000000000000000000000000037"
 
-  const buf = serialize(inputs, publics)
+  const buf = serialize(inputs, publics, { publicOnly: true })
 
   t.is(buf.toString("hex"), expected)
 })

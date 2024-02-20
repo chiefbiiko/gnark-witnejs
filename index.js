@@ -68,10 +68,15 @@ function total(...x) {
 export default function serialize(
   inputs,
   publics,
-  { prime = BN254_PRIME, publicOnly = false },
+  opts = { prime: BN254_PRIME, publicOnly: false },
 ) {
+  const prime = opts.prime || BN254_PRIME
+  const publicOnly =
+    opts.publicOnly === true || opts.publicOnly === false
+      ? opts.publicOnly
+      : false
   const out = []
-
+  console.log("PUB ONLY", publicOnly)
   // sort public/secret inputs
   const pubs = []
   const secs = []
@@ -90,6 +95,8 @@ export default function serialize(
   Array.prototype.push.apply(out, toBytesBE(total(pubs), 4))
   if (!publicOnly) {
     Array.prototype.push.apply(out, toBytesBE(total(secs), 4))
+  } else {
+    Array.prototype.push.apply(out, [0, 0, 0, 0])
   }
   Array.prototype.push.apply(
     out,
