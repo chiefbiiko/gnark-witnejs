@@ -58,7 +58,7 @@ function total(...x) {
 }
 
 /**
- * Coerces given (string) scalar(s) to bigints.
+ * Coerces given (string) scalar(s) to bigint.
  * @param {number|string|bigint} x Scalar
  * @return {bigint}
  */
