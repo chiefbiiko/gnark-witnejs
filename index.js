@@ -29,6 +29,7 @@ const BN254_PRIME =
  * @returns {Buffer} Big-endian bytes
  */
 function toBytesBE(b, len) {
+  console.log("toBytesBE b", b)
   if (typeof b !== "bigint") {
     b = BigInt(b)
   }
@@ -59,8 +60,8 @@ function total(...x) {
 
 /**
  * Coerces given (string) scalar(s) to bigint.
- * @param {number|string|bigint} x Scalar
- * @return {bigint}
+ * @param {any} x Scalar
+ * @return {any} Bigint scalar or vector
  */
 function toBigInt(x) {
   if (Array.isArray(x)) {
@@ -74,6 +75,23 @@ function toBigInt(x) {
   } else {
     return typeof x !== "bigint" ? BigInt(x.toString()) : x
   }
+}
+
+/**
+ * Recursicely pushes given inputs as field elements onto the out array.
+ * @param {any} inputs 
+ * @param {[]number} out 
+ * @returns {[number]} out array populated with all field elements of inputs
+ */
+function pushFieldElements(prime, inputs, out) {
+  return inputs.reduce((acc, cur) => {
+    if (Array.isArray(cur)) {
+      return pushFieldElements(cur, acc)
+    } else {
+      Array.prototype.push.apply(acc, toBytesBE(cur % prime, 32))
+      return acc
+    }
+  }, out)
 }
 
 /**
@@ -94,7 +112,7 @@ export default function serialize(
     opts.publicOnly === true || opts.publicOnly === false
       ? opts.publicOnly
       : false
-  const out = []
+  let out = []
 
   // sort public/secret inputs
   const pubs = []
@@ -122,30 +140,36 @@ export default function serialize(
     toBytesBE(total(pubs, publicOnly ? [] : secs), 4),
   )
 
+
+
   //TODO mk dis recursive
   // push actual field elements for public inputs
-  for (const pub of pubs) {
-    if (Array.isArray(pub)) {
-      for (const p of pub) {
-        Array.prototype.push.apply(out, toBytesBE(p % prime, 32))
-      }
-    } else {
-      Array.prototype.push.apply(out, toBytesBE(pub % prime, 32))
-    }
-  }
+  out = pushFieldElements(prime, pubs, out)
+  console.log("out1", out)
+  // for (const pub of pubs) {
+  //   if (Array.isArray(pub)) {
+  //     for (const p of pub) {
+  //       Array.prototype.push.apply(out, toBytesBE(p % prime, 32))
+  //     }
+  //   } else {
+  //     Array.prototype.push.apply(out, toBytesBE(pub % prime, 32))
+  //   }
+  // }
 
   //TODO mk dis recursive
   // push actual field elements for secret inputs
-  for (const sec of secs) {
-    if (Array.isArray(sec)) {
-      for (const s of sec) {
-        console.log("typeof s, s", typeof s, s)
-        Array.prototype.push.apply(out, toBytesBE(s % prime, 32))
-      }
-    } else {
-      Array.prototype.push.apply(out, toBytesBE(sec % prime, 32))
-    }
-  }
+  out = pushFieldElements(prime, secs, out)
+  console.log("out2", out)
+  // for (const sec of secs) {
+  //   if (Array.isArray(sec)) {
+  //     for (const s of sec) {
+  //       console.log("typeof s, s", typeof s, s)
+  //       Array.prototype.push.apply(out, toBytesBE(s % prime, 32))
+  //     }
+  //   } else {
+  //     Array.prototype.push.apply(out, toBytesBE(sec % prime, 32))
+  //   }
+  // }
 
   return Buffer.from(out)
 }
