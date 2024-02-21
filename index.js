@@ -112,16 +112,17 @@ export default function serialize(
 
   // write npub nsec nall
   Array.prototype.push.apply(out, toBytesBE(total(pubs), 4))
-  if (!publicOnly) {
-    Array.prototype.push.apply(out, toBytesBE(total(secs), 4))
-  } else {
+  if (publicOnly) {
     Array.prototype.push.apply(out, [0, 0, 0, 0])
+  } else {
+    Array.prototype.push.apply(out, toBytesBE(total(secs), 4))
   }
   Array.prototype.push.apply(
     out,
     toBytesBE(total(pubs, publicOnly ? [] : secs), 4),
   )
 
+  //TODO mk dis recursive
   // push actual field elements for public inputs
   for (const pub of pubs) {
     if (Array.isArray(pub)) {
@@ -133,10 +134,12 @@ export default function serialize(
     }
   }
 
+  //TODO mk dis recursive
   // push actual field elements for secret inputs
   for (const sec of secs) {
     if (Array.isArray(sec)) {
       for (const s of sec) {
+        console.log("typeof s, s", typeof s, s)
         Array.prototype.push.apply(out, toBytesBE(s % prime, 32))
       }
     } else {
