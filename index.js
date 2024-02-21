@@ -58,6 +58,25 @@ function total(...x) {
 }
 
 /**
+ * Coerces given (string) scalar(s) to bigints.
+ * @param {number|string|bigint} x Scalar
+ * @return {bigint}
+ */
+function toBigInt(x) {
+  if (Array.isArray(x)) {
+    return x.map(v =>
+      Array.isArray(v)
+        ? toBigInt(v)
+        : typeof v !== "bigint"
+          ? BigInt(v.toString())
+          : v,
+    )
+  } else {
+    return typeof x !== "bigint" ? BigInt(x.toString()) : x
+  }
+}
+
+/**
  * Serializes given gnark inputs to a binary full witness.
  * @param {Object} inputs Must only contain bigint (arrays), no nested objects.
  * @param {Object} publics Must set each *public* input's key to true.
@@ -76,7 +95,7 @@ export default function serialize(
       ? opts.publicOnly
       : false
   const out = []
-  console.log("PUB ONLY", publicOnly)
+
   // sort public/secret inputs
   const pubs = []
   const secs = []
@@ -85,9 +104,9 @@ export default function serialize(
       throw Error("nested objects not supported")
     }
     if (publics[k] === true) {
-      pubs.push(v)
+      pubs.push(toBigInt(v))
     } else if (!publicOnly) {
-      secs.push(v)
+      secs.push(toBigInt(v))
     }
   }
 
