@@ -86,7 +86,7 @@ function toBigInt(x) {
 function pushFieldElements(prime, inputs, out) {
   return inputs.reduce((acc, cur) => {
     if (Array.isArray(cur)) {
-      return pushFieldElements(cur, acc)
+      return pushFieldElements(prime, cur, acc)
     } else {
       Array.prototype.push.apply(acc, toBytesBE(cur % prime, 32))
       return acc
