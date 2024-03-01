@@ -1,7 +1,7 @@
 # gnark-witnejs
 
 [![ci](https://github.com/chiefbiiko/gnark-witnejs/workflows/ci/badge.svg)](https://github.com/chiefbiiko/gnark-witnejs/actions/workflows/ci.yml)
-
+🚧 FIX IN PROGRESS
 [gnark](https://github.com/Consensys/gnark) witness serializer in js.
 
 ## Usage
@@ -16,7 +16,7 @@ const opts = {/* prime: BN254, publicOnly: false */}
 const buf = serialize(inputs, publics, opts)
 ```
 
-Serializes the full witness, i.e. incl. public and secret inputs as long as:
+Make sure that:
 
 + the input object does not contain nested objects
   > nested arrays are supported though
