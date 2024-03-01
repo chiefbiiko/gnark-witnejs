@@ -117,7 +117,7 @@ export default function serialize(
   const pubs = []
   const secs = []
   for (var [k, v] of Object.entries(inputs)) {
-    if (!Array.isArray(v) && typeof v === "object") {
+    if (!Array.isArray(v) && Object.getPrototypeOf(v).constructor === Object) {
       throw Error("nested objects not supported ." + k)
     }
     if (publics[k] === true) {

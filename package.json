@@ -1,7 +1,7 @@
 {
   "name": "gnark-witnejs",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "gnark witness calculator in js",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/chiefbiiko/gnark-witnejs#readme",
   "devDependencies": {
+    "@ethersproject/bignumber": "5.7.0",
     "brittle": "3.4.0"
   }
 }
