@@ -79,7 +79,7 @@ test("handles bignums", function (t) {
 })
 
 test("handles inputs gt bn254 curve order", function (t) {
-  const inputs = { x: BigNumber.from("24198242871839275222246405745257275088696311157297823662689037894645226208583") }
+  const inputs = { x: 24198242871839275222246405745257275088696311157297823662689037894645226208583n }
   const publics = { x: true }
   const expected =
     "000000010000000000000001051b69e614b483bbfe613f3d36f699b5d66afd5a8fde9ffbf83e9682e87cfd46"
@@ -88,6 +88,19 @@ test("handles inputs gt bn254 curve order", function (t) {
 
   t.is(buf.toString("hex"), expected)
 })
+
+test("failing outpubkey input", function (t) {
+  const inputs = { x: 9696282034755050002249722442370417427348178450830409466063672603382572608895n }
+  const publics = { x: true }
+  const expected =
+    "000000010000000000000001156fe6b19f029f65eb92dc427880cde3dc64c4d2997b162d09b6aeb2d6d36d7f"
+
+  const buf = serialize(inputs, publics)
+
+  t.is(buf.toString("hex"), expected)
+})
+
+//000000010000000000000001156fe6b19f029f65eb92dc427880cde3dc64c4d2997b162d09b6aeb2d6d36d7f
 
 test("complex input", function (t) {
   /*

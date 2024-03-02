@@ -50,7 +50,7 @@ import (
 
 
 type Circuit struct {
-	GtBn254Prime frontend.Variable `gnark:",public"`
+	X frontend.Variable `gnark:",public"`
 }
 
 
@@ -120,7 +120,7 @@ func main() {
 	// 	OutNote: [N_OUTS]frontend.Variable{"0", "0"},
 	// }
 	assignment := &Circuit{
-		GtBn254Prime: frontend.Variable("24198242871839275222246405745257275088696311157297823662689037894645226208583"),
+		X: frontend.Variable("9696282034755050002249722442370417427348178450830409466063672603382572608895"),
 	}
 	w, _ := frontend.NewWitness(assignment, ecc.BN254.ScalarField())//, opts...)
 	// assert.NoError(err)

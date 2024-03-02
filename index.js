@@ -19,7 +19,10 @@
 //   - Hex representation with values `Y = 35`, `X = 3`, `Z = 2`
 //     `000000010000000200000003000000000000000000000000000000000000000000000000000000000000002300000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002`
 
-const BN254_R = // For BN254, curve order r is the Baby Jubjub prime
+// import { BigNumber } from "@ethersproject/bignumber"
+
+// For BN254, curve order r is the Baby Jubjub prime
+const BN254_R = 
   21888242871839275222246405745257275088548364400416034343698204186575808495617n
 
 /**
@@ -100,7 +103,9 @@ function pushFieldElements(modulus, inputs, out) {
  * @returns {bigint} Modulo
  */
 function modulo(b, modulus) {
-  return ((b % modulus) + modulus) % modulus
+  return b % modulus
+  // return ((b % modulus) + modulus) % modulus
+  // return BigInt(BigNumber.from(b).mod(BigNumber.from(modulus)).toString())
 }
 
 /**
