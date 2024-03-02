@@ -1,18 +1,10 @@
 package main
 
 import (
-	// "bytes"
 	"encoding/hex"
 	"fmt"
-	// "reflect"
-	// "testing"
-
 	"github.com/consensys/gnark-crypto/ecc"
-	// "github.com/consensys/gnark-crypto/ecc/bn254/fr"
-	// "github.com/consensys/gnark/backend/witness"
 	"github.com/consensys/gnark/frontend"
-	// "github.com/consensys/gnark/io"
-	// "github.com/stretchr/testify/require"
 )
 
 // const N_INS = 2
@@ -21,9 +13,6 @@ import (
 
 // type Circuit struct {
 // 	Root frontend.Variable `gnark:",public"`
-// 	// extAmount = external amount used for deposits and withdrawals
-// 	// correct extAmount range is enforced on the smart contract
-// 	// publicAmount = extAmount - fee
 // 	PublicAmount frontend.Variable `gnark:",public"`
 // 	ExtDataHash  frontend.Variable `gnark:",public"`
 
@@ -59,12 +48,6 @@ func (c *Circuit) Define(api frontend.API) error {
 }
 
 func main() {
-	// assert := require.New(t)
-
-	// opts := []frontend.WitnessOption{
-	// 	frontend.PublicOnly(),
-	// }
-
 	// assignment := &Circuit{
 	// 	Root:         frontend.Variable("2082739236611797325080453634369239079537600201645783730211441698227947076239"),
 	// 	PublicAmount: frontend.Variable("0"),
@@ -105,13 +88,13 @@ func main() {
 	// 	},
 	// 	OutSafe:   [N_OUTS]frontend.Variable{"0", "0"},
 	// 	OutAmount: [N_OUTS]frontend.Variable{"40000000000000000", "60000000000000000"},
-	// 	OutBlinding: [N_OUTS]frontend.Variable{
-	// 		"345579407108627460644481188701062114034593599050047198764705599357632517673",
-	// 		"249017094180520992379219241055561384781249373505220481029720605701328279418",
-	// 	},
 	// 	OutPubkey: [N_OUTS]frontend.Variable{
 	// 		"6411407462841906536816137161518299250774801015168708148698846593039083327999",
 	// 		"9696282034755050002249722442370417427348178450830409466063672603382572608895",
+	// 	},
+	// 	OutBlinding: [N_OUTS]frontend.Variable{
+	// 		"345579407108627460644481188701062114034593599050047198764705599357632517673",
+	// 		"249017094180520992379219241055561384781249373505220481029720605701328279418",
 	// 	},
 	// 	OutToken: [N_OUTS]frontend.Variable{
 	// 		"1184589422945421143511828701991100965039074119625",
@@ -122,10 +105,9 @@ func main() {
 	assignment := &Circuit{
 		X: frontend.Variable("9696282034755050002249722442370417427348178450830409466063672603382572608895"),
 	}
+
 	w, _ := frontend.NewWitness(assignment, ecc.BN254.ScalarField())//, opts...)
-	// assert.NoError(err)
 	buf, _ := w.MarshalBinary()
-	// assert.NoError(err)
 	fmt.Print(hex.EncodeToString(buf))
 }
 

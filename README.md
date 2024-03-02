@@ -1,7 +1,7 @@
 # gnark-witnejs
 
 [![ci](https://github.com/chiefbiiko/gnark-witnejs/workflows/ci/badge.svg)](https://github.com/chiefbiiko/gnark-witnejs/actions/workflows/ci.yml)
-🚧 FIX IN PROGRESS
+
 [gnark](https://github.com/Consensys/gnark) witness serializer in js.
 
 ## Usage

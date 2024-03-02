@@ -19,10 +19,8 @@
 //   - Hex representation with values `Y = 35`, `X = 3`, `Z = 2`
 //     `000000010000000200000003000000000000000000000000000000000000000000000000000000000000002300000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002`
 
-// import { BigNumber } from "@ethersproject/bignumber"
-
 // For BN254, curve order r is the Baby Jubjub prime
-const BN254_R = 
+const BN254_R =
   21888242871839275222246405745257275088548364400416034343698204186575808495617n
 
 /**
@@ -45,7 +43,7 @@ function toBuffer(b, len) {
 
 /**
  * Counts all items at any nesting level in all passed arrays.
- * @param  {...any} x Arbitrarily nested bigint array(s)
+ * @param  {...any[]} x Arbitrarily nested array(s)
  * @returns {number} Total item count
  */
 function total(...x) {
@@ -61,9 +59,9 @@ function total(...x) {
 }
 
 /**
- * Coerces given (string) scalar(s) to bigint.
- * @param {any} x Scalar
- * @return {any} Bigint scalar or vector
+ * Coerces given (string) scalar(s) to bigint(s).
+ * @param {string| number | bigint | string[] | number[] | BigNumber[] | bigint[]} x Scalar(s)
+ * @return {bigint | bigint[]} Bigint scalar or vector
  */
 function toBigInt(x) {
   if (Array.isArray(x)) {
@@ -81,9 +79,9 @@ function toBigInt(x) {
 
 /**
  * Recursicely pushes given inputs as field elements onto the out array.
- * @param {any} inputs
- * @param {[]number} out
- * @returns {[number]} out array populated with all field elements of inputs
+ * @param {bigint | bigint[]} inputs
+ * @param {number[]} out
+ * @returns {number[]} Byte array populated with all field elements of inputs
  */
 function pushFieldElements(modulus, inputs, out) {
   return inputs.reduce((acc, cur) => {
@@ -98,18 +96,17 @@ function pushFieldElements(modulus, inputs, out) {
 
 /**
  * Computes the modulo of b % p as ((b % p) + p) % p
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder#:~:text=To%20obtain%20a%20modulo%20in%20JavaScript%2C%20in%20place%20of%20n%20%25%20d%2C%20use%20((n%20%25%20d)%20%2B%20d)%20%25%20d.
  * @param {bigint} b Scalar
- * @param {bigint} modulus BN254 curve order
+ * @param {bigint} modulus Curve order
  * @returns {bigint} Modulo
  */
 function modulo(b, modulus) {
-  return b % modulus
-  // return ((b % modulus) + modulus) % modulus
-  // return BigInt(BigNumber.from(b).mod(BigNumber.from(modulus)).toString())
+  return ((b % modulus) + modulus) % modulus
 }
 
 /**
- * Serializes given gnark inputs to a binary full witness.
+ * Serializes given gnark inputs to a binary witness.
  * @param {Object} inputs Must only contain bigint (arrays), no nested objects.
  * @param {Object} publics Must set each *public* input's key to true.
  * @param {bigint} modulus Order of the constraint system's elliptic curve
