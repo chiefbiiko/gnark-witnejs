@@ -19,8 +19,8 @@
 //   - Hex representation with values `Y = 35`, `X = 3`, `Z = 2`
 //     `000000010000000200000003000000000000000000000000000000000000000000000000000000000000002300000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000002`
 
-const BN254_PRIME =
-  21888242871839275222246405745257275088696311157297823662689037894645226208583n
+const BN254_R = // For BN254, curve order r is the Baby Jubjub prime
+  21888242871839275222246405745257275088548364400416034343698204186575808495617n
 
 /**
  * Writes given bigint to big-endian bytes with given length.
@@ -82,31 +82,41 @@ function toBigInt(x) {
  * @param {[]number} out
  * @returns {[number]} out array populated with all field elements of inputs
  */
-function pushFieldElements(prime, inputs, out) {
+function pushFieldElements(modulus, inputs, out) {
   return inputs.reduce((acc, cur) => {
     if (Array.isArray(cur)) {
-      return pushFieldElements(prime, cur, acc)
+      return pushFieldElements(modulus, cur, acc)
     } else {
-      Array.prototype.push.apply(acc, toBuffer(cur % prime, 32))
+      Array.prototype.push.apply(acc, toBuffer(modulo(cur, modulus), 32))
       return acc
     }
   }, out)
 }
 
 /**
+ * Computes the modulo of b % p as ((b % p) + p) % p
+ * @param {bigint} b Scalar
+ * @param {bigint} modulus BN254 curve order
+ * @returns {bigint} Modulo
+ */
+function modulo(b, modulus) {
+  return ((b % modulus) + modulus) % modulus
+}
+
+/**
  * Serializes given gnark inputs to a binary full witness.
  * @param {Object} inputs Must only contain bigint (arrays), no nested objects.
  * @param {Object} publics Must set each *public* input's key to true.
- * @param {bigint} prime Prime of the constraint system's elliptic curve
+ * @param {bigint} modulus Order of the constraint system's elliptic curve
  * @param {boolean} publicOnly Only serializes the public witness
  * @returns {Buffer} Serialized witness
  */
 export default function serialize(
   inputs,
   publics,
-  opts = { prime: BN254_PRIME, publicOnly: false },
+  opts = { modulus: BN254_R, publicOnly: false },
 ) {
-  const prime = opts.prime || BN254_PRIME
+  const modulus = opts.modulus || BN254_R
   const publicOnly =
     opts.publicOnly === true || opts.publicOnly === false
       ? opts.publicOnly
@@ -117,7 +127,7 @@ export default function serialize(
   const pubs = []
   const secs = []
   for (var [k, v] of Object.entries(inputs)) {
-    if (!Array.isArray(v) && Object.getPrototypeOf(v).constructor === Object) {
+    if (Object.getPrototypeOf(v).constructor === Object) {
       throw Error("nested objects not supported ." + k)
     }
     if (publics[k] === true) {
@@ -140,8 +150,8 @@ export default function serialize(
   )
 
   // push actual field elements for public and secret inputs
-  out = pushFieldElements(prime, pubs, out)
-  out = pushFieldElements(prime, secs, out)
+  out = pushFieldElements(modulus, pubs, out)
+  out = pushFieldElements(modulus, secs, out)
 
   return Buffer.from(out)
 }

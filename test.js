@@ -1,4 +1,4 @@
-import test from "brittle"
+import {solo,test }from "brittle"
 import serialize from "./index.js"
 import { BigNumber } from "@ethersproject/bignumber"
 
@@ -78,6 +78,16 @@ test("handles bignums", function (t) {
   t.is(buf.toString("hex"), expected)
 })
 
+test("handles inputs gt bn254 curve order", function (t) {
+  const inputs = { x: BigNumber.from("24198242871839275222246405745257275088696311157297823662689037894645226208583") }
+  const publics = { x: true }
+  const expected =
+    "000000010000000000000001051b69e614b483bbfe613f3d36f699b5d66afd5a8fde9ffbf83e9682e87cfd46"
+
+  const buf = serialize(inputs, publics)
+
+  t.is(buf.toString("hex"), expected)
+})
 
 test("complex input", function (t) {
   /*
